@@ -1,378 +1,375 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MultiTool Hub - Material 3</title>
 
-  <title>Material 3 MultiTool Hub</title>
-
-  <!-- Roboto + Material Symbols -->
+  <!-- Google Fonts for Material Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
-
-  <!-- Material Web -->
+  <!-- Import Maps for Material Web Components -->
   <script type="importmap">
-  {
-    "imports": {
-      "@material/web/": "https://esm.run/@material/web/"
+    {
+      "imports": {
+        "@material/web/": "https://esm.run/@material/web/"
+      }
     }
-  }
   </script>
 
+  <!-- Load Specific Material Components -->
   <script type="module">
-    import '@material/web/all.js';
+    import '@material/web/tabs/tabs.js';
+    import '@material/web/tabs/primary-tab.js';
+    import '@material/web/textfield/outlined-text-field.js';
+    import '@material/web/button/filled-button.js';
+    import '@material/web/button/outlined-button.js';
+    import '@material/web/elevation/elevation.js';
   </script>
 
   <style>
-    :root{
+    :root {
+      /* Base Material 3 Dark Theme Colors */
       color-scheme: dark;
-
-      --md-sys-color-primary: #8ec5ff;
-      --md-sys-color-surface: #111827;
-      --md-sys-color-surface-container: #1e293b;
-      --md-sys-color-on-surface: #ffffff;
+      --md-sys-color-background: #141218;
+      --md-sys-color-on-background: #e6e0e9;
+      --md-sys-color-surface: #1d1b20;
+      --md-sys-color-surface-container: #211f26;
+      --md-sys-color-on-surface: #e6e0e9;
+      --md-sys-color-primary: #d0bcff;
+      
+      --body-font: 'Roboto', system-ui, sans-serif;
     }
 
-    *{
-      box-sizing:border-box;
-      margin:0;
-      padding:0;
-      font-family:Roboto, sans-serif;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    body{
-      background:#0f172a;
-      color:white;
-      min-height:100vh;
+    body {
+      background: var(--md-sys-color-background);
+      color: var(--md-sys-color-on-background);
+      font-family: var(--body-font);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    header{
-      padding:32px 20px;
-      text-align:center;
+    header {
+      text-align: center;
+      padding: 32px 24px;
+      background: var(--md-sys-color-surface);
     }
 
-    header h1{
-      font-size:3rem;
-      font-weight:700;
-      margin-bottom:8px;
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      color: var(--md-sys-color-primary);
     }
 
-    header p{
-      opacity:0.8;
-      font-size:1.1rem;
+    header p {
+      color: #cac4d0;
+      font-size: 1.1rem;
     }
 
-    .tabs{
-      display:flex;
-      justify-content:center;
-      gap:12px;
-      padding:0 20px 24px;
-      flex-wrap:wrap;
+    .tabs-container {
+      display: flex;
+      justify-content: center;
+      background: var(--md-sys-color-surface);
+      border-bottom: 1px solid #49454f;
     }
 
-    .tab-content{
-      display:none;
-      max-width:900px;
-      margin:auto;
-      padding:20px;
+    md-tabs {
+      min-width: 300px;
+      max-width: 600px;
+      width: 100%;
     }
 
-    .tab-content.active{
-      display:block;
+    .content {
+      flex: 1;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px 24px;
     }
 
-    md-filled-tonal-button{
-      margin-top:16px;
+    .tool {
+      display: none;
+      background: var(--md-sys-color-surface-container);
+      padding: 32px;
+      border-radius: 24px;
+      position: relative;
     }
 
-    .card{
-      padding:24px;
-      border-radius:28px;
-      background:#1e293b;
-      box-shadow:0 10px 30px rgba(0,0,0,0.35);
+    .tool.active {
+      display: block;
+      animation: fadeIn 0.3s ease-out;
     }
 
-    .tool-title{
-      font-size:2rem;
-      margin-bottom:20px;
-      font-weight:600;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    #calcResult{
-      margin-top:20px;
-      font-size:1.3rem;
-      font-weight:500;
+    h2 {
+      margin-bottom: 24px;
+      font-weight: 500;
+      font-size: 1.5rem;
+      color: var(--md-sys-color-primary);
     }
 
-    canvas{
-      width:100%;
-      background:white;
-      border-radius:20px;
-      margin-top:20px;
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 24px;
     }
 
-    textarea{
-      width:100%;
-      min-height:300px;
-      padding:18px;
-      resize:vertical;
-      border:none;
-      outline:none;
-      border-radius:20px;
-      background:#334155;
-      color:white;
-      font-size:1rem;
+    @media(min-width: 600px) {
+      .input-group {
+        flex-direction: row;
+        align-items: center;
+      }
+      md-outlined-text-field {
+        flex: 1;
+      }
     }
 
-    .saved{
-      margin-top:14px;
-      opacity:0.7;
+    md-outlined-text-field {
+      width: 100%;
+      --md-outlined-text-field-container-shape: 12px;
     }
 
-    footer{
-      text-align:center;
-      padding:40px 20px;
-      opacity:0.6;
+    /* Calculator Specifics */
+    #calcResult {
+      margin-top: 24px;
+      font-size: 1.5rem;
+      font-weight: 500;
+      padding: 16px;
+      background: var(--md-sys-color-surface);
+      border-radius: 12px;
+      text-align: center;
     }
 
-    md-outlined-text-field{
-      width:100%;
-      margin-top:12px;
+    /* Graph Specifics */
+    canvas {
+      width: 100%;
+      max-width: 100%;
+      background: #ffffff;
+      border-radius: 16px;
+      margin-top: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Notes Specifics */
+    #notesBox {
+      margin-bottom: 24px;
+      min-height: 200px;
+    }
+
+    .action-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .saved {
+      color: #a8c7fa;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .saved.show {
+      opacity: 1;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: #cac4d0;
+      font-size: 0.9rem;
     }
   </style>
 </head>
-
 <body>
 
 <header>
   <h1>MultiTool Hub</h1>
-  <p>Material 3 Edition</p>
+  <p>Calculator • Graph • Notes</p>
 </header>
 
-<div class="tabs">
-
-  <md-filled-button onclick="switchTab('calculator')">
-    Calculator
-  </md-filled-button>
-
-  <md-filled-button onclick="switchTab('graph')">
-    Graph
-  </md-filled-button>
-
-  <md-filled-button onclick="switchTab('notes')">
-    Notes
-  </md-filled-button>
-
+<!-- Material 3 Tabs -->
+<div class="tabs-container">
+  <md-tabs id="main-tabs" aria-label="Tool selection tabs">
+    <md-primary-tab id="tab-0" aria-controls="calculator" active>Calculator</md-primary-tab>
+    <md-primary-tab id="tab-1" aria-controls="graph">Graph</md-primary-tab>
+    <md-primary-tab id="tab-2" aria-controls="notes">Notes</md-primary-tab>
+  </md-tabs>
 </div>
 
-<!-- CALCULATOR -->
-<div class="tab-content active" id="calculator">
+<main class="content">
 
-  <div class="card">
-
-    <div class="tool-title">
-      Calculator
+  <!-- Calculator -->
+  <div class="tool active" id="calculator">
+    <h2>Calculator</h2>
+    <div class="input-group">
+      <md-outlined-text-field 
+        id="calcInput" 
+        label="Expression" 
+        placeholder="Example: 5 * (10 + 2)">
+      </md-outlined-text-field>
+      <md-filled-button onclick="calculate()">Calculate</md-filled-button>
     </div>
+    <div id="calcResult">Result: --</div>
+  </div>
 
-    <md-outlined-text-field
-      id="calcInput"
-      label="Equation"
-      value="5*(10+2)">
+  <!-- Graph -->
+  <div class="tool" id="graph">
+    <h2>Graph Tool</h2>
+    <div class="input-group">
+      <md-outlined-text-field 
+        id="graphInput" 
+        label="Math Function" 
+        placeholder="Example: Math.sin(x)">
+      </md-outlined-text-field>
+      <md-filled-button onclick="drawGraph()">Draw Graph</md-filled-button>
+    </div>
+    <canvas id="graphCanvas" width="700" height="350"></canvas>
+  </div>
+
+  <!-- Notes -->
+  <div class="tool" id="notes">
+    <h2>Notes</h2>
+    <md-outlined-text-field 
+      type="textarea" 
+      id="notesBox" 
+      label="Your Notes"
+      placeholder="Write your thoughts here..." 
+      rows="8">
     </md-outlined-text-field>
-
-    <md-filled-tonal-button onclick="calculate()">
-      Calculate
-    </md-filled-tonal-button>
-
-    <div id="calcResult">
-      Result:
+    
+    <div class="action-row">
+      <md-filled-button onclick="saveNotes()">Save Notes</md-filled-button>
+      <span class="saved" id="saveStatus">Notes saved successfully!</span>
     </div>
-
   </div>
 
-</div>
-
-<!-- GRAPH -->
-<div class="tab-content" id="graph">
-
-  <div class="card">
-
-    <div class="tool-title">
-      Graph Tool
-    </div>
-
-    <md-outlined-text-field
-      id="graphInput"
-      label="Function"
-      value="Math.sin(x)">
-    </md-outlined-text-field>
-
-    <md-filled-tonal-button onclick="drawGraph()">
-      Draw Graph
-    </md-filled-tonal-button>
-
-    <canvas id="graphCanvas" width="800" height="400"></canvas>
-
-  </div>
-
-</div>
-
-<!-- NOTES -->
-<div class="tab-content" id="notes">
-
-  <div class="card">
-
-    <div class="tool-title">
-      Notes
-    </div>
-
-    <textarea
-      id="notesBox"
-      placeholder="Write notes here..."></textarea>
-
-    <md-filled-tonal-button onclick="saveNotes()">
-      Save Notes
-    </md-filled-tonal-button>
-
-    <div class="saved" id="saveStatus"></div>
-
-  </div>
-
-</div>
+</main>
 
 <footer>
-  Material 3 MultiTool Hub © 2026
+  MultiTool Hub © 2026 • Built with Material Design 3
 </footer>
 
 <script>
+  // TAB SYSTEM USING M3 `<md-tabs>`
+  const tabs = document.getElementById('main-tabs');
+  const tools = document.querySelectorAll('.tool');
 
-  // TAB SWITCHING
-  function switchTab(id){
-
-    const tabs =
-      document.querySelectorAll(".tab-content");
-
-    tabs.forEach(tab=>{
-      tab.classList.remove("active");
-    });
-
-    document
-      .getElementById(id)
-      .classList.add("active");
-  }
+  tabs.addEventListener('change', () => {
+    // Hide all tools
+    tools.forEach(tool => tool.classList.remove('active'));
+    // Show the tool that matches the active tab index
+    tools[tabs.activeTabIndex].classList.add('active');
+  });
 
   // CALCULATOR
-  function calculate(){
+  function calculate() {
+    const inputField = document.getElementById("calcInput");
+    const resultDiv = document.getElementById("calcResult");
+    const input = inputField.value;
 
-    const input =
-      document.getElementById("calcInput").value;
+    if (!input.trim()) {
+      resultDiv.innerText = "Result: --";
+      return;
+    }
 
-    try{
-
+    try {
+      // Note: eval is used here per the original code's requirement. 
+      // In production, a mathematical parsing library is recommended.
       const result = eval(input);
-
-      document.getElementById("calcResult")
-        .innerText = "Result: " + result;
-
+      resultDiv.innerText = "Result: " + result;
     } catch {
-
-      document.getElementById("calcResult")
-        .innerText = "Invalid expression";
-
+      resultDiv.innerText = "Error: Invalid expression";
     }
   }
 
   // NOTES
-  const notesBox =
-    document.getElementById("notesBox");
+  const notesBox = document.getElementById("notesBox");
+  const saveStatus = document.getElementById("saveStatus");
 
-  window.onload = ()=>{
-
-    const saved =
-      localStorage.getItem("material_notes");
-
-    if(saved){
+  window.onload = () => {
+    const saved = localStorage.getItem("multitool_notes");
+    if (saved) {
       notesBox.value = saved;
     }
+    // Draw initial empty graph layout
+    drawGraph(true);
   }
 
-  function saveNotes(){
-
-    localStorage.setItem(
-      "material_notes",
-      notesBox.value
-    );
-
-    document.getElementById("saveStatus")
-      .innerText = "Notes saved!";
+  function saveNotes() {
+    localStorage.setItem("multitool_notes", notesBox.value);
+    
+    // Show feedback
+    saveStatus.classList.add("show");
+    setTimeout(() => {
+      saveStatus.classList.remove("show");
+    }, 2500);
   }
 
   // GRAPH TOOL
-  function drawGraph(){
-
-    const canvas =
-      document.getElementById("graphCanvas");
-
+  function drawGraph(isInit = false) {
+    const canvas = document.getElementById("graphCanvas");
     const ctx = canvas.getContext("2d");
+    const expr = document.getElementById("graphInput").value;
 
-    ctx.clearRect(
-      0,0,
-      canvas.width,
-      canvas.height
-    );
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // background
-    ctx.fillStyle = "white";
-    ctx.fillRect(
-      0,0,
-      canvas.width,
-      canvas.height
-    );
+    // Background
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // axes
-    ctx.strokeStyle = "black";
+    // Axes
+    ctx.strokeStyle = "#94a3b8"; // Muted color for axes
     ctx.lineWidth = 1;
 
     ctx.beginPath();
-
-    ctx.moveTo(0, canvas.height/2);
-    ctx.lineTo(canvas.width, canvas.height/2);
-
-    ctx.moveTo(canvas.width/2, 0);
-    ctx.lineTo(canvas.width/2, canvas.height);
-
+    ctx.moveTo(0, canvas.height / 2);
+    ctx.lineTo(canvas.width, canvas.height / 2);
+    ctx.moveTo(canvas.width / 2, 0);
+    ctx.lineTo(canvas.width / 2, canvas.height);
     ctx.stroke();
 
-    const expr =
-      document.getElementById("graphInput").value;
+    if (isInit || !expr.trim()) return;
 
-    ctx.strokeStyle = "#2563eb";
-    ctx.lineWidth = 2;
-
+    ctx.strokeStyle = "#6750a4"; // M3 Primary Color for the graph line
+    ctx.lineWidth = 2.5;
     ctx.beginPath();
 
-    for(let px = 0; px < canvas.width; px++){
-
-      let x =
-        (px - canvas.width/2) / 35;
-
+    for (let px = 0; px < canvas.width; px++) {
+      let x = (px - canvas.width / 2) / 30;
       let y;
 
-      try{
+      try {
         y = eval(expr);
-      } catch{
-        alert("Invalid function");
+      } catch (err) {
+        // Safe error handling directly on canvas
+        ctx.fillStyle = "#ba1a1a"; // M3 Error Color
+        ctx.font = "16px Roboto, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("Invalid function. Use valid JavaScript Math (e.g., Math.sin(x))", canvas.width / 2, 30);
         return;
       }
 
-      let py =
-        canvas.height/2 - y * 35;
+      let py = canvas.height / 2 - y * 30;
 
-      if(px === 0){
+      if (px === 0) {
         ctx.moveTo(px, py);
       } else {
         ctx.lineTo(px, py);
@@ -381,8 +378,9 @@
 
     ctx.stroke();
   }
-
 </script>
 
 </body>
 </html>
+
+```

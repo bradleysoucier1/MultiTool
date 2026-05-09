@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MultiTool Hub</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, Helvetica, sans-serif;
+    }
+
+    body{
+      background:#0f172a;
+      color:white;
+      min-height:100vh;
+    }
+
+    header{
+      padding:20px;
+      text-align:center;
+      background:#111827;
+      border-bottom:2px solid #1e293b;
+    }
+
+    header h1{
+      font-size:2.5rem;
+    }
+
+    .container{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+      gap:20px;
+      padding:25px;
+    }
+
+    .tool{
+      background:#1e293b;
+      padding:20px;
+      border-radius:15px;
+      box-shadow:0 0 15px rgba(0,0,0,0.3);
+    }
+
+    .tool h2{
+      margin-bottom:15px;
+      color:#38bdf8;
+    }
+
+    input, textarea, button{
+      width:100%;
+      padding:12px;
+      margin-top:10px;
+      border:none;
+      border-radius:8px;
+      font-size:1rem;
+    }
+
+    input, textarea{
+      background:#334155;
+      color:white;
+    }
+
+    button{
+      background:#38bdf8;
+      color:black;
+      font-weight:bold;
+      cursor:pointer;
+      transition:0.2s;
+    }
+
+    button:hover{
+      background:#0ea5e9;
+    }
+
+    #calcResult{
+      margin-top:15px;
+      font-size:1.2rem;
+      font-weight:bold;
+    }
+
+    canvas{
+      background:white;
+      border-radius:10px;
+      margin-top:15px;
+      width:100%;
+      height:300px;
+    }
+
+    .notes-save{
+      margin-top:10px;
+      color:#94a3b8;
+      font-size:0.9rem;
+    }
+
+    footer{
+      text-align:center;
+      padding:20px;
+      color:#94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>MultiTool Hub</h1>
+    <p>Calculator • Graph Tool • Notes</p>
+  </header>
+
+  <div class="container">
+
+    <!-- CALCULATOR -->
+    <div class="tool">
+      <h2>Calculator</h2>
+
+      <input type="text" id="calcInput" placeholder="Enter equation...">
+
+      <button onclick="calculate()">Calculate</button>
+
+      <div id="calcResult">Result: </div>
+    </div>
+
+    <!-- GRAPH TOOL -->
+    <div class="tool">
+      <h2>Graph Tool</h2>
+
+      <input type="text" id="graphInput" placeholder="Example: Math.sin(x)">
+
+      <button onclick="drawGraph()">Draw Graph</button>
+
+      <canvas id="graphCanvas" width="500" height="300"></canvas>
+    </div>
+
+    <!-- NOTES -->
+    <div class="tool">
+      <h2>Notes</h2>
+
+      <textarea id="notes" rows="10" placeholder="Write notes here..."></textarea>
+
+      <button onclick="saveNotes()">Save Notes</button>
+
+      <div class="notes-save" id="saveStatus"></div>
+    </div>
+
+  </div>
+
+  <footer>
+    MultiTool Hub © 2026
+  </footer>
+
+  <script>
+    // Calculator
+    function calculate() {
+      const input = document.getElementById("calcInput").value;
+
+      try {
+        const result = eval(input);
+        document.getElementById("calcResult").innerText =
+          "Result: " + result;
+      } catch {
+        document.getElementById("calcResult").innerText =
+          "Invalid expression";
+      }
+    }
+
+    // Notes
+    const notesBox = document.getElementById("notes");
+
+    window.onload = () => {
+      const saved = localStorage.getItem("notes");
+      if(saved){
+        notesBox.value = saved;
+      }
+    }
+
+    function saveNotes(){
+      localStorage.setItem("notes", notesBox.value);
+      document.getElementById("saveStatus").innerText =
+        "Notes saved!";
+    }
+
+    // Graph Tool
+    function drawGraph() {
+      const canvas = document.getElementById("graphCanvas");
+      const ctx = canvas.getContext("2d");
+
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+
+      // background
+      ctx.fillStyle = "white";
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+
+      // axes
+      ctx.strokeStyle = "black";
+      ctx.beginPath();
+      ctx.moveTo(0, canvas.height/2);
+      ctx.lineTo(canvas.width, canvas.height/2);
+
+      ctx.moveTo(canvas.width/2, 0);
+      ctx.lineTo(canvas.width/2, canvas.height);
+      ctx.stroke();
+
+      const expr = document.getElementById("graphInput").value;
+
+      ctx.strokeStyle = "blue";
+      ctx.beginPath();
+
+      for(let px = 0; px < canvas.width; px++) {
+        let x = (px - canvas.width/2) / 25;
+
+        let y;
+
+        try {
+          y = eval(expr);
+        } catch {
+          alert("Invalid function");
+          return;
+        }
+
+        let py = canvas.height/2 - y * 25;
+
+        if(px === 0){
+          ctx.moveTo(px, py);
+        } else {
+          ctx.lineTo(px, py);
+        }
+      }
+
+      ctx.stroke();
+    }
+  </script>
+
+</body>
+</html>
